@@ -1,0 +1,126 @@
+// Schema do Prisma para MVP da Pamonharia
+// Modelos: Vendedor, Produto, Venda, ItemVenda, Pagamento
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modelo do Vendedor
+model Vendedor {
+  id        String   @id @default(cuid())
+  nome      String
+  email     String   @unique
+  telefone  String?
+  ativo     Boolean  @default(true)
+  comissao  Decimal  @default(0) // Percentual de comissão
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos
+  vendas Venda[]
+
+  @@map("vendedores")
+}
+
+// Modelo do Produto
+model Produto {
+  id          String   @id @default(cuid())
+  nome        String
+  descricao   String?
+  preco       Decimal
+  categoria   String?
+  estoque     Int      @default(0)
+  ativo       Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacionamentos
+  itensVenda ItemVenda[]
+
+  @@map("produtos")
+}
+
+// Modelo da Venda
+model Venda {
+  id          String     @id @default(cuid())
+  numero      String     @unique // Número sequencial da venda
+  vendedorId  String
+  valorTotal  Decimal
+  desconto    Decimal    @default(0)
+  observacoes String?
+  status      StatusVenda @default(PENDENTE)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relacionamentos
+  vendedor   Vendedor    @relation(fields: [vendedorId], references: [id])
+  itens      ItemVenda[]
+  pagamentos Pagamento[]
+
+  @@map("vendas")
+}
+
+// Modelo do Item da Venda
+model ItemVenda {
+  id         String  @id @default(cuid())
+  vendaId    String
+  produtoId  String
+  quantidade Int
+  precoUnit  Decimal // Preço unitário no momento da venda
+  subtotal   Decimal // quantidade * precoUnit
+  createdAt  DateTime @default(now())
+
+  // Relacionamentos
+  venda   Venda   @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+  produto Produto @relation(fields: [produtoId], references: [id])
+
+  @@map("itens_venda")
+}
+
+// Modelo do Pagamento
+model Pagamento {
+  id            String        @id @default(cuid())
+  vendaId       String
+  valor         Decimal
+  formaPagamento FormaPagamento
+  status        StatusPagamento @default(PENDENTE)
+  dataVencimento DateTime?
+  dataPagamento  DateTime?
+  observacoes   String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relacionamentos
+  venda Venda @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+
+  @@map("pagamentos")
+}
+
+// Enums
+enum StatusVenda {
+  PENDENTE
+  CONFIRMADA
+  CANCELADA
+  ENTREGUE
+}
+
+enum FormaPagamento {
+  DINHEIRO
+  CARTAO_DEBITO
+  CARTAO_CREDITO
+  PIX
+  TRANSFERENCIA
+  CHEQUE
+}
+
+enum StatusPagamento {
+  PENDENTE
+  PAGO
+  CANCELADO
+  ESTORNADO
+}
