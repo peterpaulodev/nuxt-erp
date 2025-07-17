@@ -1,4 +1,3 @@
-import { Avatar } from '@/components/ui/avatar'
 import { h } from 'vue'
 
 export const sellersColumns = [
@@ -6,11 +5,7 @@ export const sellersColumns = [
     accessorKey: 'avatar',
     header: 'Usuário',
     cell: ({ row }) => {
-      return h(
-        Avatar,
-        { class: 'lowercase', src: row.getValue('avatar') },
-        row.getValue('avatar'),
-      )
+      return h(AvatarImage, { class: 'lowercase', src: row.getValue('avatar') }, row.getValue('avatar'))
     },
   },
   {
