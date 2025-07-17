@@ -1,5 +1,7 @@
 <script setup>
+import { sellersColumns } from '@/constants/datatable/columns'
 import HeaderSection from '@/pages/components/header-section.vue'
+import DataTable from '../components/datatable.vue'
 
 const users = [
   {
@@ -41,7 +43,9 @@ function goTonewUserPage() {
         </Button>
       </template>
     </HeaderSection>
-    <Card class="rounded-2xl p-4 shadow-sm">
+    <DataTable :columns="sellersColumns" :data="users" />
+
+    <!-- <Card class="rounded-2xl p-4 shadow-sm">
       <CardContent>
         <Table>
           <TableHeader>
@@ -76,6 +80,6 @@ function goTonewUserPage() {
           </TableBody>
         </Table>
       </CardContent>
-    </Card>
+    </Card> -->
   </div>
 </template>
