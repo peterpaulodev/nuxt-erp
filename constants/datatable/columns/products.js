@@ -1,8 +1,8 @@
-import { h } from 'vue'
-
 import ActionsCell from '@/components/datatable/cells/ActionsCell.vue'
 import PriceCell from '@/components/datatable/cells/PriceCell.vue'
 import StatusCell from '@/components/datatable/cells/StatusCell.vue'
+
+import { h } from 'vue'
 
 export const productsColumns = [
   {

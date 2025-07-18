@@ -1,33 +1,87 @@
+import { Badge } from '@/components/ui/badge'
 import { h } from 'vue'
 
 export const sellsColumns = [
   {
-    accessorKey: 'name',
-    header: 'Name',
-  },
-  {
-    accessorKey: 'usuario',
-    header: 'Usuário',
+    accessorKey: 'numero',
+    header: 'Número',
     cell: ({ row }) => {
-      return h('div', { class: 'lowercase' }, row.getValue('usuario'))
+      return h('div', { class: 'font-medium' }, row.getValue('numero'))
     },
   },
   {
-    accessorKey: 'email',
-    header: 'Email',
-    cell: ({ row }) => h('div', { class: 'lowercase' }, row.getValue('email')),
+    accessorKey: 'vendedor',
+    header: 'Vendedor',
+    cell: ({ row }) => {
+      const vendedor = row.getValue('vendedor')
+      return h('div', { class: 'font-medium' }, vendedor?.nome || 'N/A')
+    },
   },
-  // {
-  //   accessorKey: 'amount',
-  //   header: () => h('div', { class: 'text-right' }, 'Amount'),
-  //   cell: ({ row }) => {
-  //     const amount = Number.parseFloat(row.getValue('amount'))
-  //     const formatted = new Intl.NumberFormat('en-US', {
-  //       style: 'currency',
-  //       currency: 'USD',
-  //     }).format(amount)
+  {
+    accessorKey: 'valorTotal',
+    header: () => h('div', { class: 'text-right' }, 'Valor Total'),
+    cell: ({ row }) => {
+      const valor = Number.parseFloat(row.getValue('valorTotal'))
+      const formatted = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+      }).format(valor)
 
-  //     return h('div', { class: 'text-right font-medium' }, formatted)
-  //   },
-  // },
+      return h('div', { class: 'text-right font-medium' }, formatted)
+    },
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: ({ row }) => {
+      const status = row.getValue('status')
+      const statusConfig = {
+        PENDENTE: { variant: 'secondary', label: 'Pendente' },
+        CONFIRMADA: { variant: 'default', label: 'Confirmada' },
+        CANCELADA: { variant: 'destructive', label: 'Cancelada' },
+        ENTREGUE: { variant: 'outline', label: 'Entregue' },
+      }
+
+      const config = statusConfig[status] || { variant: 'secondary', label: status }
+
+      return h(Badge, { variant: config.variant }, () => config.label)
+    },
+  },
+  {
+    accessorKey: 'createdAt',
+    header: 'Data',
+    cell: ({ row }) => {
+      const date = new Date(row.getValue('createdAt'))
+      return h('div', { class: 'text-sm' }, date.toLocaleDateString('pt-BR'))
+    },
+  },
+  {
+    accessorKey: 'pagamentos',
+    header: 'Pagamento',
+    cell: ({ row }) => {
+      const pagamentos = row.getValue('pagamentos') || []
+      const pagamento = pagamentos[0] // Primeiro pagamentoÍ
+
+      if (!pagamento) {
+        return h('div', { class: 'text-sm text-muted-foreground' }, 'N/A')
+      }
+
+      const statusConfig = {
+        PENDENTE: { variant: 'secondary', label: 'Pendente' },
+        PAGO: { variant: 'default', label: 'Pago' },
+        CANCELADO: { variant: 'destructive', label: 'Cancelado' },
+        ESTORNADO: { variant: 'outline', label: 'Estornado' },
+      }
+
+      const config = statusConfig[pagamento.status] || {
+        variant: 'secondary',
+        label: pagamento.status,
+      }
+
+      return h('div', { class: 'flex flex-col gap-1' }, [
+        h('div', { class: 'text-sm' }, pagamento.formaPagamento.replace('_', ' ')),
+        h(Badge, { variant: config.variant, class: 'w-fit' }, () => config.label),
+      ])
+    },
+  },
 ]
