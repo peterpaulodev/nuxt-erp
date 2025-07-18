@@ -1,6 +1,6 @@
 import { prisma } from '~/lib/prisma'
 
-export default defineEventHandler(async _event => {
+export default defineEventHandler(async (_event) => {
   try {
     const vendedores = await prisma.vendedor.findMany({
       where: {

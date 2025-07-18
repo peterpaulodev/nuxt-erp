@@ -1,17 +1,17 @@
 import { prisma } from '~/lib/prisma'
 
-export default defineEventHandler(async event => {
+export default defineEventHandler(async (event) => {
   try {
     const query = getQuery(event)
 
     // Construir filtros baseados na query
     const where: any = {}
 
-    if (query.status) {
+    if (query.status !== 'ALL') {
       where.status = query.status
     }
 
-    if (query.vendedor) {
+    if (query.vendedor !== 'ALL') {
       where.vendedorId = query.vendedor
     }
 
@@ -63,9 +63,10 @@ export default defineEventHandler(async event => {
         createdAt: 'desc',
       },
     })
+    console.log(' :', vendas);
 
     // Formatar dados para o frontend
-    const vendasFormatadas = vendas.map(venda => ({
+    const vendasFormatadas = vendas.map((venda) => ({
       id: venda.id,
       numero: venda.numero,
       vendedor: venda.vendedor,
@@ -78,7 +79,7 @@ export default defineEventHandler(async event => {
       // Informações adicionais úteis
       totalItens: venda.itens.length,
       valorPago: venda.pagamentos
-        .filter(p => p.status === 'PAGO')
+        .filter((p) => p.status === 'PAGO')
         .reduce((sum, p) => sum + Number(p.valor), 0),
     }))
 

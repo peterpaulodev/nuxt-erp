@@ -19,7 +19,7 @@ export const sellsColumns = [
   },
   {
     accessorKey: 'valorTotal',
-    header: () => h('div', { class: 'text-right' }, 'Valor Total'),
+    header: () => h('div', { class: '' }, 'Valor Total'),
     cell: ({ row }) => {
       const valor = Number.parseFloat(row.getValue('valorTotal'))
       const formatted = new Intl.NumberFormat('pt-BR', {
@@ -27,7 +27,7 @@ export const sellsColumns = [
         currency: 'BRL',
       }).format(valor)
 
-      return h('div', { class: 'text-right font-medium' }, formatted)
+      return h('div', { class: 'font-medium' }, formatted)
     },
   },
   {
@@ -60,7 +60,7 @@ export const sellsColumns = [
     header: 'Pagamento',
     cell: ({ row }) => {
       const pagamentos = row.getValue('pagamentos') || []
-      const pagamento = pagamentos[0] // Primeiro pagamentoÍ
+      const pagamento = pagamentos[0] // Primeiro pagamento
 
       if (!pagamento) {
         return h('div', { class: 'text-sm text-muted-foreground' }, 'N/A')
