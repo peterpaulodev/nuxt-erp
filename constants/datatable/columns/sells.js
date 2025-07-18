@@ -1,3 +1,4 @@
+import ActionsCell from '@/components/datatable/cells/ActionsCell.vue'
 import { Badge } from '@/components/ui/badge'
 import { h } from 'vue'
 
@@ -82,6 +83,20 @@ export const sellsColumns = [
         h('div', { class: 'text-sm' }, pagamento.formaPagamento.replace('_', ' ')),
         h(Badge, { variant: config.variant, class: 'w-fit' }, () => config.label),
       ])
+    },
+  },
+  {
+    id: 'actions',
+    header: () => h('div', { class: 'text-right' }, 'Ações'),
+    cell: ({ row }) => {
+      const product = row.original
+      return h(ActionsCell, {
+        item: product,
+        hasDelete: false,
+        onEdit: (product) => {
+          navigateTo(`/vendas/${product.id}/editar`)
+        },
+      })
     },
   },
 ]

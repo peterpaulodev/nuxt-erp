@@ -4,6 +4,10 @@ defineProps({
     type: Object,
     required: true,
   },
+  hasDelete: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 defineEmits(['edit', 'delete'])
@@ -14,7 +18,7 @@ defineEmits(['edit', 'delete'])
     <Button variant="ghost" size="icon" @click="$emit('edit', item)">
       <Icon name="lucide:edit" class="h-4 w-4" />
     </Button>
-    <Button variant="ghost" size="icon" @click="$emit('delete', item)">
+    <Button v-if="hasDelete" variant="ghost" size="icon" @click="$emit('delete', item)">
       <Icon name="lucide:trash-2" class="h-4 w-4 text-red-500" />
     </Button>
   </div>

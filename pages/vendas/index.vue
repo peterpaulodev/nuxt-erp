@@ -47,7 +47,6 @@ async function fetchVendas() {
     })
 
     data.value = response
-    console.log('response :', response);
   } catch (err) {
     console.error('Erro ao buscar vendas:', err)
     error.value = `Erro ao carregar vendas: ${err.message || 'Erro desconhecido'}`
